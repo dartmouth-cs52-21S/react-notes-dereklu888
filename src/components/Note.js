@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import Draggable from 'react-draggable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilAlt, faCheck, faExpandArrowsAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 class Note extends Component {
   constructor(props) {
@@ -6,6 +10,8 @@ class Note extends Component {
 
     this.state = {
       isEditing: false,
+      x: this.props.x,
+      y: this.props.y,
     };
   }
 
@@ -15,32 +21,73 @@ class Note extends Component {
     }));
   }
 
+  deleteSelf = () => {
+    this.props.deleteNote(this.props.id);
+  }
+
   renderEdit = () => {
     if (this.state.isEditing) {
       // get the autosize text area module
       return (<textarea />);
     } else {
-      return (<div />);
+      return (<p>{this.props.text}</p>);
     }
+  }
+
+  handleDrag = (e, dragData) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      x: dragData.x,
+      y: dragData.y,
+    }));
+  }
+
+  getEditIcon = () => {
+    return (!this.state.isEditing ? faPencilAlt : faCheck);
   }
 
   render() {
     return (
       <div className="note" id={this.props.id}>
-        {/* make this a flex */}
-        <div className="note-bar">
-          <h2>{this.props.title}</h2>
+        <Draggable
+          handle=".drag"
+          grid={[25, 25]}
+          defaultPosition={{ x: this.props.x, y: this.props.y }}
+          position={{
+            x: this.state.x, y: this.state.y,
+          }}
+          onDrag={this.handleDrag}
+        >
+          <div className="note-content">
 
-          <i id="mini-icon" aria-label="Delete" role="button" className="delete far fa-trash-alt" onClick={this.props.deleteNote(this.props.id)} tabIndex={0} />
-          <i id="mini-icon" aria-label="Edit" role="button" className={this.state.isEditing ? 'edit fas fa-pencil-alt' : 'edit fas fa-check'} onClick={this.toggleEdit} tabIndex={0} />
+            {/* make this a flex */}
+            <div className="note-bar">
+              <h2>{this.props.title}</h2>
 
-          {/* align self to flex end */}
-          <i id="mini-icon" aria-label="Drag" role="button" className="drag fas fa-expand-arrows-alt" />
+              <FontAwesomeIcon icon={faTrashAlt}
+                aria-label="Delete"
+                role="button"
+                className="delete"
+                onClick={this.deleteSelf}
+                tabIndex={0}
+              />
+              <FontAwesomeIcon icon={this.getEditIcon()}
+                aria-label="Edit"
+                role="button"
+                className="edit"
+                onClick={this.toggleEdit}
+                tabIndex={0}
+              />
 
-        </div>
-        <div className="note-content">
-          {this.renderEdit()}
-        </div>
+              {/* align self to flex end */}
+              <FontAwesomeIcon icon={faExpandArrowsAlt} aria-label="Drag" role="button" className="drag" />
+
+            </div>
+            <div className="note-text">
+              {this.renderEdit()}
+            </div>
+          </div>
+        </Draggable>
       </div>
     );
   }

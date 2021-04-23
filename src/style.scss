@@ -10,5 +10,22 @@ body, html {
     height: 300px;
     background-repeat: no-repeat;
     background-size: contain;
-  }
-  
+}
+
+.content-wrapper {
+  width: 1000px;
+  height: 1000px;
+  background-color: white;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+}
+
+.canvas {
+  flex: 1;
+}
+
+.note-content {
+  background-color: tan;
+  position: absolute;
+}

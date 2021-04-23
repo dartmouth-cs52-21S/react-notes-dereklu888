@@ -4,7 +4,7 @@ const AddBar = (props) => {
   return (
     <div id="addbar">
       <input />
-      <button type="submit" onClick={props.addNote()}>Submit</button>
+      <button type="submit" onClick={props.addNote}>Submit</button>
     </div>
   );
 };
