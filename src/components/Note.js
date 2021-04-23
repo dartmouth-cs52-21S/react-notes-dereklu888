@@ -12,6 +12,7 @@ class Note extends Component {
       isEditing: false,
       x: this.props.x,
       y: this.props.y,
+      text: this.props.text,
     };
   }
 
@@ -25,12 +26,22 @@ class Note extends Component {
     this.props.deleteNote(this.props.id);
   }
 
+  onInputChange = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      text: event.target.value,
+    }));
+    // this.props.updateNote(this.props.id, {
+    //   text: event.target.value,
+    // });
+  }
+
   renderEdit = () => {
     if (this.state.isEditing) {
       // get the autosize text area module
-      return (<textarea />);
+      return (<textarea onChange={this.onInputChange} value={this.state.text} />);
     } else {
-      return (<p>{this.props.text}</p>);
+      return (<p>{this.state.text}</p>);
     }
   }
 
@@ -40,6 +51,10 @@ class Note extends Component {
       x: dragData.x,
       y: dragData.y,
     }));
+    // this.props.updateNote(this.props.id, {
+    //   x: dragData.x,
+    //   y: dragData.y,
+    // });
   }
 
   getEditIcon = () => {
@@ -51,7 +66,8 @@ class Note extends Component {
       <div className="note" id={this.props.id}>
         <Draggable
           handle=".drag"
-          grid={[25, 25]}
+          grid={[1, 1]}
+          bounds=".content-wrapper"
           defaultPosition={{ x: this.props.x, y: this.props.y }}
           position={{
             x: this.state.x, y: this.state.y,

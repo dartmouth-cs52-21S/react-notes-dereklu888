@@ -8,7 +8,7 @@ const autoprefixer = require('autoprefixer');
 const postcssPresets = require('postcss-preset-env');
 
 const finalCSSLoader = (env === 'production') ? MiniCssExtractPlugin.loader : { loader: 'style-loader' };
-const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
+// const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 
 module.exports = {
   mode: env,
@@ -58,7 +58,7 @@ module.exports = {
         ],
       },
       {
-        test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        test: /.(jpe?g|png|gif|ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
         use: [
           {
             loader: 'file-loader',
@@ -69,10 +69,10 @@ module.exports = {
           },
         ],
       },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        type: 'asset',
-      },
+      // {
+      //   test: /\.(jpe?g|png|gif)$/i,
+      //   type: 'asset',
+      // },
     ],
   },
   plugins: [
@@ -84,24 +84,24 @@ module.exports = {
       template: './src/index.html',
       filename: './index.html',
     }),
-    new ImageMinimizerPlugin({
-      minimizerOptions: {
-        plugins: [
-          ['gifsicle', { interlaced: true }],
-          ['imagemin-mozjpeg', { quality: 5, progressive: true }],
-          ['optipng', { optimizationLevel: 5 }],
-          [
-            'svgo',
-            {
-              plugins: [
-                {
-                  removeViewBox: false,
-                },
-              ],
-            },
-          ],
-        ],
-      },
-    }),
+    // new ImageMinimizerPlugin({
+    //   minimizerOptions: {
+    //     plugins: [
+    //       ['gifsicle', { interlaced: true }],
+    //       ['jpegtran', { progressive: true }],
+    //       ['optipng', { optimizationLevel: 5 }],
+    //       [
+    //         'svgo',
+    //         {
+    //           plugins: [
+    //             {
+    //               removeViewBox: false,
+    //             },
+    //           ],
+    //         },
+    //       ],
+    //     ],
+    //   },
+    // }),
   ],
 };

@@ -9,7 +9,7 @@ import './fontawesome-free-5.15.3-web/css/all.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.counter = 0;
+    this.counter = 2;
 
     // eslint-disable-next-line new-cap
     const noteMap = Immutable.Map({
@@ -45,8 +45,18 @@ class App extends Component {
   }
 
   addNote = (id, note) => {
+    //   REMOVE THIS TEMPID WHEN THE TIMES COMES
+    const tempID = this.countUp();
+
+    const defaultNote = {
+      text: '',
+      x: 200,
+      y: 200,
+      zIndex: 10,
+    };
+
     this.setState((prevState) => ({
-      notes: prevState.notes.set(id, note),
+      notes: prevState.notes.set(tempID, { ...note, ...defaultNote }),
     }));
   }
 
@@ -70,7 +80,7 @@ class App extends Component {
           zIndex={note.zIndex}
           deleteNote={this.deleteNote}
           updateNote={this.updateNote}
-          key={this.countUp()}
+          key={id}
         />
       );
     });
