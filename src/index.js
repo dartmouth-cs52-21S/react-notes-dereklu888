@@ -4,7 +4,6 @@ import Immutable from 'immutable';
 import AddBar from './components/AddBar';
 import Note from './components/Note';
 import './style.scss';
-import './fontawesome-free-5.15.3-web/css/all.css';
 
 class App extends Component {
   constructor(props) {
@@ -86,7 +85,11 @@ class App extends Component {
     });
     return (
       <div className="content-wrapper">
-        <AddBar addNote={this.addNote} />
+        <div className="top-bar">
+          <h1>My Bulletin Board</h1>
+          <AddBar addNote={this.addNote} />
+        </div>
+
         <div className="canvas">
           {notesItems}
         </div>

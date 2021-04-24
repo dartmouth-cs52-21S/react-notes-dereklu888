@@ -26,7 +26,7 @@ class AddBar extends Component {
   render() {
     return (
       <div id="add-bar">
-        <input onChange={this.onInputChange} value={this.state.newTitle} />
+        <input onChange={this.onInputChange} value={this.state.newTitle} placeholder="New note title" />
         <button type="submit" onClick={this.makeNote}>Submit</button>
       </div>
     );

@@ -3,6 +3,8 @@ import Draggable from 'react-draggable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faCheck, faExpandArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import ReactMarkdown from 'react-markdown';
+import TextareaAutosize from 'react-textarea-autosize';
 
 class Note extends Component {
   constructor(props) {
@@ -10,9 +12,9 @@ class Note extends Component {
 
     this.state = {
       isEditing: false,
-      x: this.props.x,
-      y: this.props.y,
-      text: this.props.text,
+    //   x: this.props.x,
+    //   y: this.props.y,
+    //   text: this.props.text,
     };
   }
 
@@ -27,34 +29,34 @@ class Note extends Component {
   }
 
   onInputChange = (event) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      text: event.target.value,
-    }));
-    // this.props.updateNote(this.props.id, {
+    // this.setState((prevState) => ({
+    //   ...prevState,
     //   text: event.target.value,
-    // });
+    // }));
+    this.props.updateNote(this.props.id, {
+      text: event.target.value,
+    });
   }
 
   renderEdit = () => {
     if (this.state.isEditing) {
       // get the autosize text area module
-      return (<textarea onChange={this.onInputChange} value={this.state.text} />);
+      return (<TextareaAutosize onChange={this.onInputChange} value={this.props.text} />);
     } else {
-      return (<p>{this.state.text}</p>);
+      return (<ReactMarkdown>{this.props.text || ''}</ReactMarkdown>);
     }
   }
 
   handleDrag = (e, dragData) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      x: dragData.x,
-      y: dragData.y,
-    }));
-    // this.props.updateNote(this.props.id, {
+    // this.setState((prevState) => ({
+    //   ...prevState,
     //   x: dragData.x,
     //   y: dragData.y,
-    // });
+    // }));
+    this.props.updateNote(this.props.id, {
+      x: dragData.x,
+      y: dragData.y,
+    });
   }
 
   getEditIcon = () => {
@@ -70,7 +72,7 @@ class Note extends Component {
           bounds=".content-wrapper"
           defaultPosition={{ x: this.props.x, y: this.props.y }}
           position={{
-            x: this.state.x, y: this.state.y,
+            x: this.props.x, y: this.props.y,
           }}
           onDrag={this.handleDrag}
         >
