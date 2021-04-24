@@ -16,7 +16,7 @@ class AddBar extends Component {
   makeNote = () => {
     // remove placeholder ID when implement server
     if (this.state.newTitle) {
-      this.props.addNote(1, { title: this.state.newTitle });
+      this.props.addNote({ title: this.state.newTitle });
       this.setState((prevState) => ({
         newTitle: '',
       }));

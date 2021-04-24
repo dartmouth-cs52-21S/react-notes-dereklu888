@@ -4,31 +4,38 @@ import Immutable from 'immutable';
 import AddBar from './components/AddBar';
 import Note from './components/Note';
 import './style.scss';
+import * as db from './services/datastore';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.counter = 2;
 
+    // const noteMap = Immutable.Map({
+    //   0: {
+    //     title: 'testing',
+    //     text: '![](http://i.giphy.com/gyRWkLSQVqlPi.gif)',
+    //     x: 400,
+    //     y: 12,
+    //     zIndex: 10,
+    //   },
+    //   1: {
+    //     title: 'headings',
+    //     text: '# large ',
+    //     x: 300,
+    //     y: 300,
+    //     zIndex: 20,
+    //   },
+    // });
     // eslint-disable-next-line new-cap
-    const noteMap = Immutable.Map({
-      0: {
-        title: 'testing',
-        text: '![](http://i.giphy.com/gyRWkLSQVqlPi.gif)',
-        x: 400,
-        y: 12,
-        zIndex: 10,
-      },
-      1: {
-        title: 'headings',
-        text: '# large ',
-        x: 300,
-        y: 300,
-        zIndex: 20,
-      },
-    });
+    this.state = { notes: Immutable.Map() };
+  }
 
-    this.state = { notes: noteMap };
+  componentDidMount() {
+    db.fetchNotes((newState) => {
+      // eslint-disable-next-line new-cap
+      this.setState({ notes: Immutable.Map(newState) });
+    });
   }
 
   countUp = () => {
@@ -38,15 +45,13 @@ class App extends Component {
 
   deleteNote = (id) => {
     console.log('Deleted Note');
-    this.setState((prevState) => ({
-      notes: prevState.notes.delete(id),
-    }));
+    // this.setState((prevState) => ({
+    //   notes: prevState.notes.delete(id),
+    // }));
+    db.pushDelete(id);
   }
 
-  addNote = (id, note) => {
-    //   REMOVE THIS TEMPID WHEN THE TIMES COMES
-    const tempID = this.countUp();
-
+  addNote = (note) => {
     const defaultNote = {
       text: '',
       x: 200,
@@ -54,16 +59,18 @@ class App extends Component {
       zIndex: 10,
     };
 
-    this.setState((prevState) => ({
-      notes: prevState.notes.set(tempID, { ...note, ...defaultNote }),
-    }));
+    // this.setState((prevState) => ({
+    //   notes: prevState.notes.set(tempID, { ...note, ...defaultNote }),
+    // }));
+    db.pushNew({ ...note, ...defaultNote });
   }
 
   //   takes an object with note properties
   updateNote = (id, newNote) => {
-    this.setState((prevState) => ({
-      notes: prevState.notes.update(id, (prevNote) => { return { ...prevNote, ...newNote }; }),
-    }));
+    // this.setState((prevState) => ({
+    //   notes: prevState.notes.update(id, (prevNote) => { return { ...prevNote, ...newNote }; }),
+    // }));
+    db.pushUpdate(id, newNote);
   }
 
   render() {
