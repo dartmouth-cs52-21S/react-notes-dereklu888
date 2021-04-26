@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import Draggable from 'react-draggable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencilAlt, faCheck, faExpandArrowsAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPencilAlt, faCheck, faExpandArrowsAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import ReactMarkdown from 'react-markdown';
 import TextareaAutosize from 'react-textarea-autosize';
+import { ResizableBox } from 'react-resizable';
+import '../../node_modules/react-resizable/css/styles.css';
 
 class Note extends Component {
   constructor(props) {
@@ -59,6 +63,13 @@ class Note extends Component {
     });
   }
 
+  handleResize = (e, resizeData) => {
+    this.props.updateNote(this.props.id, {
+      width: resizeData.size.width,
+      height: resizeData.size.height,
+    });
+  }
+
   getEditIcon = () => {
     return (!this.state.isEditing ? faPencilAlt : faCheck);
   }
@@ -66,6 +77,7 @@ class Note extends Component {
   render() {
     return (
       <div className="note" id={this.props.id}>
+
         <Draggable
           handle=".drag"
           grid={[1, 1]}
@@ -76,36 +88,47 @@ class Note extends Component {
           }}
           onDrag={this.handleDrag}
         >
-          <div className="note-content">
+          <ResizableBox resizeHandles={['se']}
+            width={this.props.width}
+            height={this.props.height}
+            minConstraints={[160, 160]}
+            maxConstraints={[500, 500]}
+            handleSize={[20, 20]}
+            onResize={this.handleResize}
+          >
 
-            {/* make this a flex */}
-            <div className="note-bar">
-              <h2>{this.props.title}</h2>
+            <div className="note-content">
 
-              <FontAwesomeIcon icon={faTrashAlt}
-                aria-label="Delete"
-                role="button"
-                className="delete"
-                onClick={this.deleteSelf}
-                tabIndex={0}
-              />
-              <FontAwesomeIcon icon={this.getEditIcon()}
-                aria-label="Edit"
-                role="button"
-                className="edit"
-                onClick={this.toggleEdit}
-                tabIndex={0}
-              />
+              {/* make this a flex */}
+              <div className="note-bar">
+                <h2>{this.props.title}</h2>
 
-              {/* align self to flex end */}
-              <FontAwesomeIcon icon={faExpandArrowsAlt} aria-label="Drag" role="button" className="drag" />
+                <FontAwesomeIcon icon={faTrashAlt}
+                  aria-label="Delete"
+                  role="button"
+                  className="delete"
+                  onClick={this.deleteSelf}
+                  tabIndex={0}
+                />
+                <FontAwesomeIcon icon={this.getEditIcon()}
+                  aria-label="Edit"
+                  role="button"
+                  className="edit"
+                  onClick={this.toggleEdit}
+                  tabIndex={0}
+                />
 
+                {/* align self to flex end */}
+                <FontAwesomeIcon icon={faExpandArrowsAlt} aria-label="Drag" role="button" className="drag" />
+
+              </div>
+              <div className="note-text">
+                {this.renderEdit()}
+              </div>
             </div>
-            <div className="note-text">
-              {this.renderEdit()}
-            </div>
-          </div>
+          </ResizableBox>
         </Draggable>
+
       </div>
     );
   }

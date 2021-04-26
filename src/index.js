@@ -9,24 +9,7 @@ import * as db from './services/datastore';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.counter = 2;
 
-    // const noteMap = Immutable.Map({
-    //   0: {
-    //     title: 'testing',
-    //     text: '![](http://i.giphy.com/gyRWkLSQVqlPi.gif)',
-    //     x: 400,
-    //     y: 12,
-    //     zIndex: 10,
-    //   },
-    //   1: {
-    //     title: 'headings',
-    //     text: '# large ',
-    //     x: 300,
-    //     y: 300,
-    //     zIndex: 20,
-    //   },
-    // });
     // eslint-disable-next-line new-cap
     this.state = { notes: Immutable.Map() };
   }
@@ -44,7 +27,6 @@ class App extends Component {
   }
 
   deleteNote = (id) => {
-    console.log('Deleted Note');
     // this.setState((prevState) => ({
     //   notes: prevState.notes.delete(id),
     // }));
@@ -56,6 +38,8 @@ class App extends Component {
       text: '',
       x: 200,
       y: 200,
+      width: 200,
+      height: 200,
       zIndex: 10,
     };
 
@@ -75,7 +59,6 @@ class App extends Component {
 
   render() {
     //   the map [id, note] is destructuring the key, value tuple created by entrySeq https://zellwk.com/blog/es6/
-    console.log(this.counter);
     const notesItems = this.state.notes.entrySeq().map(([id, note]) => {
       return (
         <Note id={id}
@@ -83,6 +66,8 @@ class App extends Component {
           text={note.text}
           x={note.x}
           y={note.y}
+          width={note.width}
+          height={note.height}
           zIndex={note.zIndex}
           deleteNote={this.deleteNote}
           updateNote={this.updateNote}
