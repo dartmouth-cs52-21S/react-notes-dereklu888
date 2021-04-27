@@ -1,3 +1,7 @@
+/**
+ * This file contains the note component to be used in the App component.
+ */
+
 import React, { Component } from 'react';
 import Draggable from 'react-draggable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,7 +14,15 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { ResizableBox } from 'react-resizable';
 import '../../node_modules/react-resizable/css/styles.css';
 
+/**
+ * Note component
+ */
 class Note extends Component {
+  /**
+     * The constructor simply sets the current editing status to false.
+     *
+     * @param {*} props
+     */
   constructor(props) {
     super(props);
 
@@ -19,22 +31,38 @@ class Note extends Component {
     };
   }
 
+  /**
+   * This function toggles the note's state of whether it is currently in edit mode or not.
+   */
   toggleEdit = () => {
     this.setState((prevState) => ({
       isEditing: !prevState.isEditing,
     }));
   }
 
+  /**
+   * This function deletes this note by calling the deleteNote function passed in.
+   */
   deleteSelf = () => {
     this.props.deleteNote(this.props.id);
   }
 
+  /**
+   * This event handler updates the note's text as it is being changed.
+   *
+   * @param {Event} event
+   */
   onInputChange = (event) => {
     this.props.updateNote(this.props.id, {
       text: event.target.value,
     });
   }
 
+  /**
+   * This function returns either a text input box if the note is in editing mode, or just the text if not.
+   *
+   * @returns a JSX component to either allow editing or display text.
+   */
   renderEdit = () => {
     if (this.state.isEditing) {
       return (<TextareaAutosize onChange={this.onInputChange} value={this.props.text} />);
@@ -43,6 +71,12 @@ class Note extends Component {
     }
   }
 
+  /**
+   * This event handler updates the note's x and y position as it is dragged.
+   *
+   * @param {Event} e
+   * @param {Object} dragData
+   */
   handleDrag = (e, dragData) => {
     this.props.updateNote(this.props.id, {
       x: dragData.x,
@@ -50,6 +84,12 @@ class Note extends Component {
     });
   }
 
+  /**
+   * This event handler updates the note's width and height as it is being resized.
+   *
+   * @param {} e
+   * @param {*} resizeData
+   */
   handleResize = (e, resizeData) => {
     this.props.updateNote(this.props.id, {
       width: resizeData.size.width,
@@ -57,6 +97,11 @@ class Note extends Component {
     });
   }
 
+  /**
+   * This function is used to render the icon when editing or not.
+   *
+   * @returns A pencil icon if the note is not in edit mode, a check if it is.
+   */
   getEditIcon = () => {
     return (!this.state.isEditing ? faPencilAlt : faCheck);
   }
@@ -67,7 +112,7 @@ class Note extends Component {
 
         <Draggable
           handle=".drag"
-          grid={[1, 1]}
+          grid={[2, 2]}
           bounds=".content-wrapper"
           defaultPosition={{ x: this.props.x, y: this.props.y }}
           position={{

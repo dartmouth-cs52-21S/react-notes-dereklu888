@@ -1,18 +1,38 @@
+/**
+ * This file contains the AddBar component to be used in the App component.
+ */
+
 import React, { Component } from 'react';
 
+/**
+ * AddBar component
+ */
 class AddBar extends Component {
+  /**
+   * This function sets the current input value as an empty string.
+   *
+   * @param {*} props
+   */
   constructor(props) {
     super(props);
 
     this.state = { newTitle: '' };
   }
 
+  /**
+   * This event handler changes the input box value based on the changes in it (a driven input box).
+   *
+   * @param {Event} event
+   */
   onInputChange = (event) => {
     this.setState((prevState) => ({
       newTitle: event.target.value,
     }));
   }
 
+  /**
+   * This function creates a note by calling the addNote function passed to it with the title given.
+   */
   makeNote = () => {
     // remove placeholder ID when implement server
     if (this.state.newTitle) {

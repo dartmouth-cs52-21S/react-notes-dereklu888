@@ -1,3 +1,7 @@
+/**
+ *  Main JS script for the notes application.
+ */
+
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
@@ -6,7 +10,14 @@ import Note from './components/Note';
 import './style.scss';
 import * as db from './services/datastore';
 
+/**
+ * Main React component
+ */
 class App extends Component {
+  /**
+     * The constructor sets the initial state, specifying the Immutable.Map as notes
+     * @param {*} props
+     */
   constructor(props) {
     super(props);
 
@@ -14,6 +25,9 @@ class App extends Component {
     this.state = { notes: Immutable.Map() };
   }
 
+  /**
+   * This function simply fetches the data available in Firebase when the component is mounted.
+   */
   componentDidMount() {
     db.fetchNotes((newState) => {
       // eslint-disable-next-line new-cap
@@ -21,15 +35,20 @@ class App extends Component {
     });
   }
 
-  countUp = () => {
-    this.counter += 1;
-    return this.counter;
-  }
-
+  /**
+   * This function deletes a given note ID.
+   *
+   * @param {string} id The id of the note to be deleted
+   */
   deleteNote = (id) => {
     db.pushDelete(id);
   }
 
+  /**
+   * This function creates a new note on top of all other notes.
+   *
+   * @param {Object} note The note object to be created, this is usually just the note title as per the input from the AddBar.
+   */
   addNote = (note) => {
     const defaultNote = {
       text: '',
@@ -43,11 +62,21 @@ class App extends Component {
     db.pushNew({ ...note, ...defaultNote });
   }
 
-  //   takes an object with note properties
+  /**
+   * This function updates the note with the given id with the new properties specified in the newNote object.
+   *
+   * @param {string} id The ID of the note to be updated.
+   * @param {Object} newNote The properties to be set/updated.
+   */
   updateNote = (id, newNote) => {
     db.pushUpdate(id, newNote);
   }
 
+  /**
+   * This function brings forward a note so that it is on top of all other notes.
+   *
+   * @param {string} id The note ID to be brought forward.
+   */
   bringFoward = (id) => {
     this.state.notes.entrySeq().forEach(([noteid, note]) => {
       if (id !== noteid && note.zIndex > this.state.notes.get(id).zIndex) {
@@ -57,6 +86,9 @@ class App extends Component {
     db.pushUpdate(id, { zIndex: this.state.notes.size });
   }
 
+  /**
+   * This function organizes all notes so that they are visible
+   */
   organize = () => {
     let curx = 0;
     let cury = 0;
