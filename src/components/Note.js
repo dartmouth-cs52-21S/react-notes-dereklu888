@@ -134,22 +134,24 @@ class Note extends Component {
             <div className="note-content">
 
               <div className="note-bar">
-                <h2>{this.props.title}</h2>
+                <div className="left">
+                  <h2>{this.props.title}</h2>
 
-                <FontAwesomeIcon icon={faTrashAlt}
-                  aria-label="Delete"
-                  role="button"
-                  className="delete"
-                  onClick={this.deleteSelf}
-                  tabIndex={0}
-                />
-                <FontAwesomeIcon icon={this.getEditIcon()}
-                  aria-label="Edit"
-                  role="button"
-                  className="edit"
-                  onClick={this.toggleEdit}
-                  tabIndex={0}
-                />
+                  <FontAwesomeIcon icon={faTrashAlt}
+                    aria-label="Delete"
+                    role="button"
+                    className="delete"
+                    onClick={this.deleteSelf}
+                    tabIndex={0}
+                  />
+                  <FontAwesomeIcon icon={this.getEditIcon()}
+                    aria-label="Edit"
+                    role="button"
+                    className="edit"
+                    onClick={this.toggleEdit}
+                    tabIndex={0}
+                  />
+                </div>
 
                 <FontAwesomeIcon icon={faExpandArrowsAlt} aria-label="Drag" role="button" className="drag" />
 

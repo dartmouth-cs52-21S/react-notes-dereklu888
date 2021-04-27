@@ -34,7 +34,6 @@ class AddBar extends Component {
    * This function creates a note by calling the addNote function passed to it with the title given.
    */
   makeNote = () => {
-    // remove placeholder ID when implement server
     if (this.state.newTitle) {
       this.props.addNote({ title: this.state.newTitle });
       this.setState((prevState) => ({
@@ -46,9 +45,12 @@ class AddBar extends Component {
   render() {
     return (
       <div id="add-bar">
-        <input onChange={this.onInputChange} value={this.state.newTitle} placeholder="New note title" />
-        <button type="submit" onClick={this.makeNote}>Submit</button>
-        <button type="submit" onClick={this.props.organize}>Organize</button>
+        <span className="note-creator">
+          <input onChange={this.onInputChange} value={this.state.newTitle} placeholder="New note title" />
+          <button type="submit" onClick={this.makeNote}>Submit</button>
+        </span>
+
+        <button type="submit" onClick={this.props.organize} className="organize">Organize</button>
       </div>
     );
   }

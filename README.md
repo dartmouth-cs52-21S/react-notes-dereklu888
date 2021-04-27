@@ -18,10 +18,14 @@ to do quite a bit of digging until I found the right documentation or answer.
 
 ## Extra Credit
 
-My notes can be resizable (though this is a little bit buggy).
+My notes can be reordered.  
+<img src="src/img/ec1.gif">  
 
-My notes can be reordered.
+My notes can be resizable (though this is a little bit buggy).  
+<img src="src/img/ec2.gif">  
 
-My notes can be organized.
+My notes can be organized.  
+<img src="src/img/ec3.gif">  
 
 ## Screenshots
+<img src="src/img/page1.png">
