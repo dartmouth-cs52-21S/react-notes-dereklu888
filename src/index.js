@@ -27,9 +27,6 @@ class App extends Component {
   }
 
   deleteNote = (id) => {
-    // this.setState((prevState) => ({
-    //   notes: prevState.notes.delete(id),
-    // }));
     db.pushDelete(id);
   }
 
@@ -40,25 +37,27 @@ class App extends Component {
       y: 200,
       width: 200,
       height: 200,
-      zIndex: 10,
+      zIndex: this.state.notes.size + 1,
     };
 
-    // this.setState((prevState) => ({
-    //   notes: prevState.notes.set(tempID, { ...note, ...defaultNote }),
-    // }));
     db.pushNew({ ...note, ...defaultNote });
   }
 
   //   takes an object with note properties
   updateNote = (id, newNote) => {
-    // this.setState((prevState) => ({
-    //   notes: prevState.notes.update(id, (prevNote) => { return { ...prevNote, ...newNote }; }),
-    // }));
     db.pushUpdate(id, newNote);
   }
 
+  bringFoward = (id) => {
+    this.state.notes.entrySeq().forEach(([noteid, note]) => {
+      if (id !== noteid && note.zIndex > this.state.notes.get(id).zIndex) {
+        db.pushUpdate(noteid, { zIndex: note.zIndex - 1 });
+      }
+    });
+    db.pushUpdate(id, { zIndex: this.state.notes.size });
+  }
+
   render() {
-    //   the map [id, note] is destructuring the key, value tuple created by entrySeq https://zellwk.com/blog/es6/
     const notesItems = this.state.notes.entrySeq().map(([id, note]) => {
       return (
         <Note id={id}
@@ -71,6 +70,7 @@ class App extends Component {
           zIndex={note.zIndex}
           deleteNote={this.deleteNote}
           updateNote={this.updateNote}
+          bringFoward={this.bringFoward}
           key={id}
         />
       );

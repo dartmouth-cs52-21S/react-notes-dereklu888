@@ -16,9 +16,6 @@ class Note extends Component {
 
     this.state = {
       isEditing: false,
-    //   x: this.props.x,
-    //   y: this.props.y,
-    //   text: this.props.text,
     };
   }
 
@@ -33,10 +30,6 @@ class Note extends Component {
   }
 
   onInputChange = (event) => {
-    // this.setState((prevState) => ({
-    //   ...prevState,
-    //   text: event.target.value,
-    // }));
     this.props.updateNote(this.props.id, {
       text: event.target.value,
     });
@@ -44,7 +37,6 @@ class Note extends Component {
 
   renderEdit = () => {
     if (this.state.isEditing) {
-      // get the autosize text area module
       return (<TextareaAutosize onChange={this.onInputChange} value={this.props.text} />);
     } else {
       return (<ReactMarkdown>{this.props.text || ''}</ReactMarkdown>);
@@ -52,11 +44,6 @@ class Note extends Component {
   }
 
   handleDrag = (e, dragData) => {
-    // this.setState((prevState) => ({
-    //   ...prevState,
-    //   x: dragData.x,
-    //   y: dragData.y,
-    // }));
     this.props.updateNote(this.props.id, {
       x: dragData.x,
       y: dragData.y,
@@ -87,6 +74,7 @@ class Note extends Component {
             x: this.props.x, y: this.props.y,
           }}
           onDrag={this.handleDrag}
+          onMouseDown={() => { this.props.bringFoward(this.props.id); }}
         >
           <ResizableBox resizeHandles={['se']}
             width={this.props.width}
@@ -95,11 +83,11 @@ class Note extends Component {
             maxConstraints={[500, 500]}
             handleSize={[20, 20]}
             onResize={this.handleResize}
+            style={{ zIndex: this.props.zIndex }}
           >
 
             <div className="note-content">
 
-              {/* make this a flex */}
               <div className="note-bar">
                 <h2>{this.props.title}</h2>
 
@@ -118,7 +106,6 @@ class Note extends Component {
                   tabIndex={0}
                 />
 
-                {/* align self to flex end */}
                 <FontAwesomeIcon icon={faExpandArrowsAlt} aria-label="Drag" role="button" className="drag" />
 
               </div>
