@@ -27,5 +27,8 @@ My notes can be resizable (though this is a little bit buggy).
 My notes can be organized.  
 <img src="src/img/ec3.gif">  
 
+I implemented authentication.  
+<img src="src/img/ec4.gif">  
+
 ## Screenshots
 <img src="src/img/page1.png">

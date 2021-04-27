@@ -1,7 +1,7 @@
 /**
  *  Main JS script for the notes application.
  */
-
+import firebase from 'firebase';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
@@ -22,7 +22,7 @@ class App extends Component {
     super(props);
 
     // eslint-disable-next-line new-cap
-    this.state = { notes: Immutable.Map() };
+    this.state = { auth: false, notes: Immutable.Map() };
   }
 
   /**
@@ -31,7 +31,11 @@ class App extends Component {
   componentDidMount() {
     db.fetchNotes((newState) => {
       // eslint-disable-next-line new-cap
-      this.setState({ notes: Immutable.Map(newState) });
+      this.setState((prevState) => ({
+        ...prevState,
+        // eslint-disable-next-line new-cap
+        notes: Immutable.Map(newState),
+      }));
     });
   }
 
@@ -86,6 +90,46 @@ class App extends Component {
     db.pushUpdate(id, { zIndex: this.state.notes.size });
   }
 
+  handleRegister = () => {
+    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then((userCredential) => {
+        this.setState((prevState) => ({
+          ...prevState,
+          auth: true,
+        }));
+      })
+      .catch((error) => {
+        console.log('Register failed');
+      });
+  }
+
+  handleSignIn = () => {
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+      .then((userCredential) => {
+        this.setState((prevState) => ({
+          ...prevState,
+          auth: true,
+        }));
+      })
+      .catch((error) => {
+        console.log('Register failed');
+      });
+  }
+
+  onInputChangeEmail = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      email: event.target.value,
+    }));
+  }
+
+  onInputChangePass = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      password: event.target.value,
+    }));
+  }
+
   /**
    * This function organizes all notes so that they are visible
    */
@@ -106,35 +150,49 @@ class App extends Component {
   }
 
   render() {
-    const notesItems = this.state.notes.entrySeq().map(([id, note]) => {
+    if (firebase.auth().currentUser) {
+      const notesItems = this.state.notes.entrySeq().map(([id, note]) => {
+        return (
+          <Note id={id}
+            title={note.title}
+            text={note.text}
+            x={note.x}
+            y={note.y}
+            width={note.width}
+            height={note.height}
+            zIndex={note.zIndex}
+            deleteNote={this.deleteNote}
+            updateNote={this.updateNote}
+            bringFoward={this.bringFoward}
+            key={id}
+          />
+        );
+      });
       return (
-        <Note id={id}
-          title={note.title}
-          text={note.text}
-          x={note.x}
-          y={note.y}
-          width={note.width}
-          height={note.height}
-          zIndex={note.zIndex}
-          deleteNote={this.deleteNote}
-          updateNote={this.updateNote}
-          bringFoward={this.bringFoward}
-          key={id}
-        />
-      );
-    });
-    return (
-      <div className="content-wrapper">
-        <div className="top-bar">
-          <h1>My Bulletin Board</h1>
-          <AddBar addNote={this.addNote} organize={this.organize} />
-        </div>
+        <div className="content-wrapper">
+          <div className="top-bar">
+            <h1>My Bulletin Board</h1>
+            <AddBar addNote={this.addNote} organize={this.organize} />
+          </div>
 
-        <div className="canvas">
-          {notesItems}
+          <div className="canvas">
+            {notesItems}
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="content-wrapper">
+          <h1>Please register or log in!</h1>
+          <p>Email:</p>
+          <input className="auth" type="email" name="email" onChange={this.onInputChangeEmail} />
+          <p>Password: (must be at least 8 characters long)</p>
+          <input className="auth" type="password" name="password" id="password" onChange={this.onInputChangePass} />
+          <button type="submit" onClick={this.handleRegister} className="auth">Register</button>
+          <button type="submit" onClick={this.handleSignIn} className="auth">Log in</button>
+        </div>
+      );
+    }
   }
 }
 ReactDOM.render(<App />, document.getElementById('main'));
