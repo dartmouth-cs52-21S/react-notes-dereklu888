@@ -28,6 +28,7 @@ class AddBar extends Component {
       <div id="add-bar">
         <input onChange={this.onInputChange} value={this.state.newTitle} placeholder="New note title" />
         <button type="submit" onClick={this.makeNote}>Submit</button>
+        <button type="submit" onClick={this.props.organize}>Organize</button>
       </div>
     );
   }

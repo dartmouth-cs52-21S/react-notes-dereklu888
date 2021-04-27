@@ -57,6 +57,22 @@ class App extends Component {
     db.pushUpdate(id, { zIndex: this.state.notes.size });
   }
 
+  organize = () => {
+    let curx = 0;
+    let cury = 0;
+    let maxHeight = 0;
+    this.state.notes.entrySeq().forEach(([id, note]) => {
+      if (curx + note.width > 1000) {
+        curx = 0;
+        cury += maxHeight;
+        maxHeight = 0;
+      }
+      maxHeight = note.height > maxHeight ? note.height : maxHeight;
+      db.pushUpdate(id, { x: curx, y: cury });
+      curx += note.width;
+    });
+  }
+
   render() {
     const notesItems = this.state.notes.entrySeq().map(([id, note]) => {
       return (
@@ -79,7 +95,7 @@ class App extends Component {
       <div className="content-wrapper">
         <div className="top-bar">
           <h1>My Bulletin Board</h1>
-          <AddBar addNote={this.addNote} />
+          <AddBar addNote={this.addNote} organize={this.organize} />
         </div>
 
         <div className="canvas">
