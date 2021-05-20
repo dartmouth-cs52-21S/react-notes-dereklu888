@@ -5,10 +5,13 @@ import firebase from 'firebase';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Immutable from 'immutable';
+import io from 'socket.io-client';
 import AddBar from './components/AddBar';
 import Note from './components/Note';
 import './style.scss';
 import * as db from './services/datastore';
+
+const socketserver = 'http://localhost:9090';
 
 /**
  * Main React component
@@ -21,6 +24,12 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.socket = io(socketserver);
+    this.socket.on('connect', () => { console.log('socket.io connected'); });
+    this.socket.on('disconnect', () => { console.log('socket.io disconnected'); });
+    this.socket.on('reconnect', () => { console.log('socket.io reconnected'); });
+    this.socket.on('error', (error) => { console.log(error); });
+
     // eslint-disable-next-line new-cap
     this.state = { auth: false, notes: Immutable.Map() };
   }
@@ -29,12 +38,12 @@ class App extends Component {
    * This function simply fetches the data available in Firebase when the component is mounted.
    */
   componentDidMount() {
-    db.fetchNotes((newState) => {
+    this.socket.on('notes', (notes) => {
       // eslint-disable-next-line new-cap
       this.setState((prevState) => ({
         ...prevState,
         // eslint-disable-next-line new-cap
-        notes: Immutable.Map(newState),
+        notes: Immutable.Map(notes),
       }));
     });
   }
@@ -45,7 +54,8 @@ class App extends Component {
    * @param {string} id The id of the note to be deleted
    */
   deleteNote = (id) => {
-    db.pushDelete(id);
+    // db.pushDelete(id);
+    this.socket.emit('deleteNote', id);
   }
 
   /**
@@ -63,7 +73,8 @@ class App extends Component {
       zIndex: this.state.notes.size + 1,
     };
 
-    db.pushNew({ ...note, ...defaultNote });
+    // db.pushNew({ ...note, ...defaultNote });
+    this.socket.emit('createNote', { ...defaultNote, ...note });
   }
 
   /**
@@ -73,7 +84,8 @@ class App extends Component {
    * @param {Object} newNote The properties to be set/updated.
    */
   updateNote = (id, newNote) => {
-    db.pushUpdate(id, newNote);
+    // db.pushUpdate(id, newNote);
+    this.socket.emit('updateNote', id, newNote);
   }
 
   /**
